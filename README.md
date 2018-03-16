@@ -1,5 +1,5 @@
 # Coursera-ML
-Assignments for Andrew Ng's Machine Learning course implemented in Python
+Assignments for Andrew Ng's Machine Learning course implemented in Python3
 
 ```
 cd Coursera-ML/ex1
