@@ -5,7 +5,9 @@ Assignments for Andrew Ng's Machine Learning course implemented in Python
 cd Coursera-ML/ex1
 export PYTHONPATH=../
 python submit.py
+```
 
+```
 login (Email address): 
 token: 
 ==
