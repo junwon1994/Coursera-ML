@@ -1,18 +1,4 @@
-import matplotlib.pyplot as plt
-import numpy as np
-
-from matplotlib import use, cm
-from mpl_toolkits.mplot3d import axes3d
-from sklearn import linear_model
-
-from gradientDescent import gradientDescent
-from computeCost import computeCost
-from warmUpExercise import warmUpExercise
-from plotData import plotData
-
-use('TkAgg')
-
-# Machine Learning Online Class - Exercise 1: Linear Regression
+#  Machine Learning Online Class - Exercise 1: Linear Regression
 
 #  Instructions
 #  ------------
@@ -23,153 +9,137 @@ use('TkAgg')
 #
 #     warmUpExercise.py
 #     plotData.py
-#     gradientDescent.py
 #     computeCost.py
-#     gradientDescentMulti.py
-#     computeCostMulti.py
-#     featureNormalize.py
-#     normalEqn.py
+#     gradientDescent.py
 #
 #  For this exercise, you will not need to change any code in this file,
 #  or any other files other than those mentioned above.
 #
 # x refers to the population size in 10,000s
 # y refers to the profit in $10,000s
+#
 
-# ==================== Part 1: Basic Function ====================
+#  Initialization
+import numpy as np
+import matplotlib.pyplot as plt
+
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator
+from mpl_toolkits.mplot3d import axes3d
+
+from warmUpExercise import warmUpExercise
+from plotData import plotData
+from gradientDescent import gradientDescent
+from computeCost import computeCost
+
+#  ==================== Part 1: Basic Function ====================
 # Complete warmUpExercise.py
 print('Running warmUpExercise ...')
 print('5x5 Identity Matrix:')
-warmup = warmUpExercise()
-print(warmup)
-input('Program paused. Press Enter to continue...')
+warmUpExercise()
 
-# ======================= Part 2: Plotting =======================
+input('Program paused. Press Enter to continue.\n')
+
+#  ======================= Part 2: Plotting =======================
+print('Plotting Data ...')
 data = np.loadtxt('ex1data1.txt', delimiter=',')
-m = len(data)
-X = np.column_stack((np.ones(m), data[:, 0]))
+X = data[:, 0]
 y = data[:, 1]
+m = len(y)  # number of training examples
 
 # Plot Data
 # Note: You have to complete the code in plotData.py
-print('Plotting Data ...')
-plotData(x=X[:, 1], y=y)
-plt.show(block=False)
+plotData(X, y)
 
-input('Program paused. Press Enter to continue...')
+input('Program paused. Press Enter to continue.\n')
 
-# =================== Part 3: Gradient descent ===================
-print('Running Gradient Descent ...')
-theta = np.zeros(2)
+#  =================== Part 3: Cost and Gradient descent ===================
 
-# compute and display initial cost
-J = computeCost(X, y, theta)
-print('cost: %0.4f ' % J)
+X = np.c_[np.ones(m), X]  # Add a column of ones to x
+theta = np.zeros(2)  # initialize fitting parameters
 
 # Some gradient descent settings
 iterations = 1500
 alpha = 0.01
 
+print('\nTesting the cost function ...')
+# compute and display initial cost
+J = computeCost(X, y, theta)
+print('With theta = [0  0]\nCost computed = {:.2f}'.format(J))
+print('Expected cost value (approx) 32.07')
+
+# further testing of the cost function
+J = computeCost(X, y, np.array([-1, 2]))
+print('\nWith theta = [-1  2]\nCost computed = {:.2f}'.format(J))
+print('Expected cost value (approx) 54.24')
+
+input('Program paused. Press enter to continue.\n')
+
+print('\nRunning Gradient Descent ...')
 # run gradient descent
-theta, J_history = gradientDescent(X, y, theta, alpha, iterations)
+theta, _ = gradientDescent(X, y, theta, alpha, iterations)
 
 # print theta to screen
-print('Theta found by gradient descent: ')
-print('%s %s \n' % (theta[0], theta[1]))
+print('Theta found by gradient descent:')
+print('{}'.format(theta))
+print('Expected theta values (approx)')
+print('[-3.6303  1.1664]')
 
 # Plot the linear fit
-plotData(x=X[:, 1], y=y)
-plt.plot(X[:, 1], X @ theta, 'b-', label='Linear regression')
-plt.legend(loc='lower right', shadow=True, numpoints=1)
-plt.show(block=False)
-
-input('Program paused. Press Enter to continue...')
+plt.ion()  # keep previous plot visible
+plt.plot(X[:, 1], X.dot(theta), '-')
+plt.legend(['Training data', 'Linear regression'], loc='lower right')
+plt.ioff()  # dont't overlay any more plots on this figure
 
 # Predict values for population sizes of 35,000 and 70,000
-predict1 = np.array([1, 3.5]) @ theta
-predict2 = np.array([1, 7]) @ theta
+predict1 = np.array([1, 3.5]).dot(theta)
 print('For population = 35,000, we predict a profit of {:.4f}'.format(
     predict1 * 10000))
+predict2 = np.array([1, 7]).dot(theta)
 print('For population = 70,000, we predict a profit of {:.4f}'.format(
     predict2 * 10000))
 
-# ============= Part 4: Visualizing J(theta_0, theta_1) =============
+input('Program paused. Press enter to continue.\n')
+
+#  ============= Part 4: Visualizing J(theta_0, theta_1) =============
 print('Visualizing J(theta_0, theta_1) ...')
 
 # Grid over which we will calculate J
-theta0_vals = np.linspace(-10, 10, m)
-theta1_vals = np.linspace(-1, 4, m)
+theta0_vals = np.linspace(-10, 10, 100)
+theta1_vals = np.linspace(-1, 4, 100)
 
 # initialize J_vals to a matrix of 0's
-J_vals = np.array(np.zeros(m).T)
+J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
 
-for i in range(theta0_vals.size):
-    col = []
-    for j in range(theta1_vals.size):
-        t = np.array([theta0_vals[i], theta1_vals[j]])
-        col.append(computeCost(X, y, t.T))
-    J_vals = np.column_stack((J_vals, col))
+# Fill out J_vals
+for i, theta0_val in enumerate(theta0_vals):
+    for j, theta1_val in enumerate(theta1_vals):
+        t = np.array([theta0_val, theta1_val])
+        J_vals[i, j] = computeCost(X, y, t)
 
 # Because of the way meshgrids work in the surf command, we need to
 # transpose J_vals before calling surf, or else the axes will be flipped
-J_vals = J_vals[:, 1:].T
+J_vals = J_vals.T
 theta0_vals, theta1_vals = np.meshgrid(theta0_vals, theta1_vals)
-
 # Surface plot
-fig = plt.figure()
-ax = fig.gca(projection='3d')
-ax.plot_surface(
-    theta0_vals,
-    theta1_vals,
-    J_vals,
-    rstride=8,
-    cstride=8,
-    alpha=0.3,
-    cmap=cm.coolwarm,
-    linewidth=0,
-    antialiased=False)
+fig = plt.figure(figsize=(10, 4))
+ax = fig.add_subplot(1, 2, 1, projection='3d')
+ax.plot_surface(theta0_vals, theta1_vals, J_vals, cmap=cm.jet)
 ax.set_xlabel(r'$\theta_0$')
 ax.set_ylabel(r'$\theta_1$')
-ax.set_zlabel(r'J($\theta$)')
-plt.show(block=False)
-
-input('Program paused. Press Enter to continue...')
+ax.view_init(30, 50)
+ax.axis([10, -10, 4, -1])
+ax.xaxis.set_major_locator(LinearLocator(5))
 
 # Contour plot
-plt.figure()
-
+ax = fig.add_subplot(1, 2, 2)
 # Plot J_vals as 15 contours spaced logarithmically between 0.01 and 100
-ax = plt.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-2, 3, 20))
-plt.clabel(ax, inline=1, fontsize=10)
-plt.xlabel(r'$\theta_0$')
-plt.ylabel(r'$\theta_1$')
-plt.plot(0.0, 0.0, 'rx', linewidth=2, markersize=10)
-plt.show(block=False)
+ax.contour(theta0_vals, theta1_vals, J_vals, np.logspace(-2, 3, 20))
+ax.set_xlabel(r'$\theta_0$')
+ax.set_ylabel(r'$\theta_1$')
+ax.xaxis.set_major_locator(LinearLocator(11))
+ax.yaxis.set_major_locator(LinearLocator(11))
+ax.plot(theta[0], theta[1], 'rx', markersize=10, linewidth=2)
 
-input('Program paused. Press Enter to continue...')
-
-# =============Use Scikit-learn =============
-regr = linear_model.LinearRegression(fit_intercept=False, normalize=True)
-regr.fit(X, y)
-
-print('Theta found by scikit: ')
-print('%s %s \n' % (regr.coef_[0], regr.coef_[1]))
-
-predict1 = np.array([1, 3.5]).dot(regr.coef_)
-predict2 = np.array([1, 7]).dot(regr.coef_)
-print('For population = 35,000, we predict a profit of {:.4f}'.format(
-    predict1 * 10000))
-print('For population = 70,000, we predict a profit of {:.4f}'.format(
-    predict2 * 10000))
-
-plotData(x=data[:, 0], y=data[:, 1])
-plt.plot(
-    X[:, 1],
-    X.dot(regr.coef_),
-    '-',
-    color='black',
-    label='Linear regression with scikit')
-plt.legend(loc='lower right', shadow=True, numpoints=1)
-plt.show(block=False)
-
-input('Program paused. Press Enter to continue...')
+plt.tight_layout()
+plt.show(block=True)
