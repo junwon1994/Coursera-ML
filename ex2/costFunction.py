@@ -1,12 +1,12 @@
-from numpy import log, dot
+import numpy as np
+
 from sigmoid import sigmoid
-from gradientFunction import gradientFunction
 
 
 def costFunction(theta, X, y):
-    """ computes the cost of using theta as the
-    parameter for logistic regression and the
-    gradient of the cost w.r.t. to the parameters."""
+    """Computes the cost of using theta as the parameter for logistic
+    regression and the gradient of the cost w.r.t. to the parameters.
+    """
 
     # Initialize some useful values
     m = len(y)  # number of training examples
@@ -18,9 +18,14 @@ def costFunction(theta, X, y):
     #               derivatives of the cost w.r.t. each parameter in theta
     #
     # Note: grad should have the same dimensions as theta
-    h = sigmoid(dot(X, theta))
-    J = -(dot(y, log(h)) + dot(1 - y, log(1 - h))) / m
-    grad = gradientFunction(theta, X, y)
+    #
+
+    z = X.dot(theta)
+    h = sigmoid(z)
+
+    J = (-y.dot(np.log(h)) - (1 - y).dot(np.log(1 - h))) / m
+    grad = (h - y).dot(X) / m
+
     # =============================================================
 
     return J, grad

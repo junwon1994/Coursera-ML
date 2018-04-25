@@ -17,39 +17,38 @@ part_names = [
 srcs = [
     'sigmoid.py',
     'costFunction.py',
-    'gradientFunction.py',
+    'costFunction.py',
     'predict.py',
     'costFunctionReg.py',
-    'gradientFunctionReg.py',
+    'costFunctionReg.py',
 ]
 
 
 def output(part_id):
-    X = np.c_[np.ones(20),
-              np.exp(1) * np.sin(range(1, 21)),
-              np.exp(0.5) * np.cos(range(1, 21))]
-    y = (np.sin(X[:, 0] + X[:, 1]) > 0).astype(int)
-
-    theta = np.array([0.25, 0.5, -0.5])
-
-    lambda_ = 0.1
-
     fname = srcs[part_id - 1].rsplit('.', 1)[0]
     mod = __import__(fname, fromlist=[fname], level=0)
     func = getattr(mod, fname)
 
+    # Random Test Cases
+    X = np.c_[np.ones(20),
+              np.exp(1) * np.sin(np.arange(1, 21)),
+              np.exp(0.5) * np.cos(np.arange(1, 21))]
+    y = np.sin(X[:, 0] + X[:, 1]) > 0
+
     if part_id == 1:
         return sprintf('%0.5f ', func(X))
     elif part_id == 2:
-        return sprintf('%0.5f ', func(theta, X, y))
+        return sprintf('%0.5f ', func(np.array([0.25, 0.5, -0.5]), X, y))
     elif part_id == 3:
-        return sprintf('%0.5f ', func(theta, X, y))
+        cost, grad = func(np.array([0.25, 0.5, -0.5]), X, y)
+        return sprintf('%0.5f ', grad)
     elif part_id == 4:
-        return sprintf('%0.5f ', func(theta, X))
+        return sprintf('%0.5f ', func(np.array([0.25, 0.5, -0.5]), X))
     elif part_id == 5:
-        return sprintf('%0.5f ', func(theta, X, y, lambda_))
+        return sprintf('%0.5f ', func(np.array([0.25, 0.5, -0.5]), X, y, 0.1))
     elif part_id == 6:
-        return sprintf('%0.5f ', func(theta, X, y, lambda_))
+        cost, grad = func(np.array([0.25, 0.5, -0.5]), X, y, 0.1)
+        return sprintf('%0.5f ', grad)
 
 
 s = Submission(homework, part_names, srcs, output)
