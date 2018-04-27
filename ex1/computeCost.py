@@ -9,7 +9,7 @@ def computeCost(X, y, theta):
     # Instructions: Compute the cost of a particular choice of theta
     #               You should set J to the cost.
 
-    h = X.dot(theta)
+    h = X @ theta
     J = sum((h - y)**2) / (2 * m)
 
     # =========================================================================

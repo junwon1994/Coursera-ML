@@ -10,9 +10,9 @@ def normalEqn(X, y):
     #
 
     # ---------------------- Sample Solution ----------------------
-    Gramian = X.T.dot(X)
-    moment = X.T.dot(y)
-    theta = np.linalg.pinv(Gramian).dot(moment)
+    Gramian = X.T @ X
+    moment = X.T @ y
+    theta = np.linalg.pinv(Gramian) @ moment
     # -------------------------------------------------------------
 
     # ============================================================

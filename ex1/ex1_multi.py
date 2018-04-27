@@ -105,7 +105,7 @@ print()
 # Recall that the first column of X is all-ones. Thus, it does
 # not need to be normalized.
 
-price = np.array([1, 1650, 3]).dot(theta)
+price = np.array([1, 1650, 3]) @ theta
 
 # ============================================================
 
@@ -149,7 +149,7 @@ print()
 # Estimate the price of a 1650 sq-ft, 3 br house
 # ====================== YOUR CODE HERE ======================
 
-price = np.array([1, 1650, 3]).dot(theta)
+price = np.array([1, 1650, 3]) @ theta
 
 # ============================================================
 

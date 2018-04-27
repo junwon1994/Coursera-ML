@@ -151,7 +151,7 @@ input('\nProgram paused. Press Enter to continue.\n')
 #  Predict probability for a student with score 45 on exam 1
 #  and score 85 on exam 2
 
-prob = sigmoid(np.array([1, 45, 85]).dot(theta))
+prob = sigmoid(np.array([1, 45, 85]) @ theta)
 print('For a student with scores 45 and 85, we predict an admission '
       'probability of {:.3f}'.format(prob))
 print('Expected value: 0.775 +/- 0.002\n')

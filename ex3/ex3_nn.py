@@ -1,16 +1,3 @@
-import sys
-sys.path.append('../ex2/')
-
-import scipy.io
-import numpy as np
-import matplotlib.pyplot as plt
-
-from displayData import displayData
-from predict import predict
-
-from matplotlib import use
-use('TkAgg')
-
 #  Machine Learning Online Class - Exercise 3 | Part 2: Neural Networks
 #  Instructions
 #  ------------
@@ -19,15 +6,20 @@ use('TkAgg')
 #  linear exercise. You will need to complete the following functions
 #  in this exericse:
 #
-#     lrCostFunction.m (logistic regression cost function)
-#     oneVsAll.m
-#     predictOneVsAll.m
-#     predict.m
+#     predict.py
 #
 #  For this exercise, you will not need to change any code in this file,
 #  or any other files other than those mentioned above.
 
-# Setup the parameters you will use for this exercise
+#  Initialization
+import numpy as np
+
+from scipy.io import loadmat
+
+from displayData import displayData
+from predict import predict
+
+#  Setup the parameters you will use for this exercise
 input_layer_size = 400  # 20x20 Input Images of Digits
 hidden_layer_size = 25  # 25 hidden units
 num_labels = 10  # 10 labels, from 1 to 10
@@ -41,29 +33,29 @@ num_labels = 10  # 10 labels, from 1 to 10
 # Load Training Data
 print('Loading and Visualizing Data ...')
 
-Data = scipy.io.loadmat('ex3data1.mat')
-X = Data['X']
-y = Data['y'].flatten()
-m, n = X.shape
+data = loadmat('ex3data1.mat')
+X = data['X']
+y = data['y'].ravel()
+m = len(X)
 
 # Randomly select 100 data points to display
-sel = np.random.permutation(range(m))
+sel = np.random.permutation(m)
 sel = sel[:100]
 
 displayData(X[sel])
 
-input('Program paused. Press Enter to continue...')
+input('Program paused. Press Enter to continue.\n')
 
-# ================ Part 2: Loading Pameters ================
-# In this part of the exercise, we load some pre-initialized
-# neural network parameters.
+#  ================ Part 2: Loading Pameters ================
+#  In this part of the exercise, we load some pre-initialized
+#  neural network parameters.
 
 print('Loading Saved Neural Network Parameters ...')
 
 # Load the weights into variables Theta1 and Theta2
-Weights = scipy.io.loadmat('ex3weights.mat')
-Theta1 = Weights['Theta1']
-Theta2 = Weights['Theta2']
+weights = loadmat('ex3weights.mat')
+Theta1 = weights['Theta1']
+Theta2 = weights['Theta2']
 
 #  ================= Part 3: Implement Predict =================
 #  After training the neural network, we would like to use it to predict
@@ -73,7 +65,7 @@ Theta2 = Weights['Theta2']
 
 pred = predict(Theta1, Theta2, X)
 
-print('\nTraining Set Accuracy: %f' % (np.mean(pred == y) * 100))
+print('\nTraining Set Accuracy: {:.1f}'.format(np.mean(pred == y) * 100))
 
 input('Program paused. Press Enter to continue...')
 
@@ -81,17 +73,18 @@ input('Program paused. Press Enter to continue...')
 #  through the examples one at the a time to see what it is predicting.
 
 #  Randomly permute examples
-rp = np.random.permutation(range(m))
+rp = np.random.permutation(m)
 
 for i in range(m):
     # Display
-    print('Displaying Example Image')
-    data = X[rp[i]].reshape(-1, n)
-    displayData(data)
+    print('\nDisplaying Example Image')
+    displayData(X[rp[i]])
 
-    pred = predict(Theta1, Theta2, data)
-    digit = pred % num_labels
-    print('\nNeural Network Prediction: %d (digit %d)' % (pred, digit))
+    pred = predict(Theta1, Theta2, X[rp[i]])
+    print('\nNeural Network Prediction: {:d} (digit {:d})'.format(
+        pred, pred % num_labels))
 
-    input('Program paused. Press Enter to continue...')
-    plt.close()
+    # Pause with quit option
+    s = input('Paused - press enter to continue, q to exit:')
+    if s == 'q':
+        break

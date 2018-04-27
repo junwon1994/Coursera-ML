@@ -19,7 +19,7 @@ def predict(theta, X):
     #               You should set p to a vector of 0's and 1's
     #
 
-    z = X.dot(theta)
+    z = X @ theta
     h = sigmoid(z)
 
     p[h >= 0.5] = 1

@@ -9,16 +9,17 @@ def oneVsAll(X, y, num_labels, lambda_):
         the classifiers in a matrix all_theta, where the i-th row of all_theta
         corresponds to the classifier for label i
     """
+    if X.ndim == 1:
+        X = X.reshape(1, -1)
 
     # Some useful variables
     m, n = X.shape
 
     # You need to return the following variables correctly
     all_theta = np.zeros((num_labels, n + 1))
-    #  all_cost = np.zeros(num_labels)
 
     # Add ones to the X data matrix
-    X = np.column_stack([np.ones(m), X])
+    X = np.c_[np.ones(m), X]
 
     # ====================== YOUR CODE HERE ======================
     # Instructions: You should complete the following code to train num_labels
@@ -37,16 +38,22 @@ def oneVsAll(X, y, num_labels, lambda_):
     # Set Initial theta
     initial_theta = np.zeros(n + 1)
 
-    # This function will return theta and the cost
-    for c in range(1, num_labels + 1):
-        result = minimize(
-            lrCostFunction,
+    # Set options for minimize
+    optimset = {'disp': True, 'maxiter': 500}
+
+    for c in range(num_labels):
+        # Run minimize to obtain the optimal theta
+        # This function will return theta and the cost
+        res = minimize(
+            lambda t: lrCostFunction(t, X, y == (c + 1), lambda_),
             initial_theta,
-            args=(X, (y == c), lambda_),
-            method='CG',
+            method='TNC',
             jac=True,
-            options={'disp': True})
-        all_theta[c - 1] = result.x
+            options=optimset)
+        theta = res['x']
+
+        all_theta[c] = theta
+
     # =========================================================================
 
     return all_theta

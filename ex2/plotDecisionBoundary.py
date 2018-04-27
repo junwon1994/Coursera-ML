@@ -34,7 +34,7 @@ def plotDecisionBoundary(theta, X, y):
         # Evaluate z = theta*x over the gird
         for i, u_ in enumerate(u):
             for j, v_ in enumerate(v):
-                z[i, j] = mapFeature(u_, v_).dot(theta)
+                z[i, j] = mapFeature(u_, v_) @ theta
 
         z = z.T  # important to transpose z before calling contour
         # Plot z = 0

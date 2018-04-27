@@ -21,8 +21,8 @@ def gradientDescent(X, y, theta, alpha, num_iters):
         #       of the cost function (computeCost) and gradient here.
         #
 
-        h = X.dot(theta)
-        theta -= alpha * (h - y).dot(X) / m
+        h = X @ theta
+        theta -= alpha * (h - y) @ X / m
 
         # ============================================================
 

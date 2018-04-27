@@ -1,6 +1,6 @@
 import numpy as np
 
-from ex2.sigmoid import sigmoid
+from sigmoid import sigmoid
 
 
 def predictOneVsAll(all_theta, X):
@@ -30,9 +30,9 @@ def predictOneVsAll(all_theta, X):
     #       for each row.
     #
 
-    z = np.dot(X, all_theta.T)
-
+    z = X @ all_theta.T
     h = sigmoid(z)
+
     p = np.argmax(h, axis=1)
 
     # =========================================================================

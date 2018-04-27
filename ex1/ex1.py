@@ -87,15 +87,15 @@ print('[-3.6303  1.1664]')
 
 # Plot the linear fit
 plt.ion()  # keep previous plot visible
-plt.plot(X[:, 1], X.dot(theta), '-')
+plt.plot(X[:, 1], X @ theta, '-')
 plt.legend(['Training data', 'Linear regression'], loc='lower right')
 plt.ioff()  # dont't overlay any more plots on this figure
 
 # Predict values for population sizes of 35,000 and 70,000
-predict1 = np.array([1, 3.5]).dot(theta)
+predict1 = np.array([1, 3.5]) @ theta
 print('For population = 35,000, we predict a profit of {:.4f}'.format(
     predict1 * 10000))
-predict2 = np.array([1, 7]).dot(theta)
+predict2 = np.array([1, 7]) @ theta
 print('For population = 70,000, we predict a profit of {:.4f}'.format(
     predict2 * 10000))
 

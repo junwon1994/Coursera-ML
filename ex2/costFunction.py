@@ -20,11 +20,11 @@ def costFunction(theta, X, y):
     # Note: grad should have the same dimensions as theta
     #
 
-    z = X.dot(theta)
+    z = X @ theta
     h = sigmoid(z)
 
-    J = (-y.dot(np.log(h)) - (1 - y).dot(np.log(1 - h))) / m
-    grad = (h - y).dot(X) / m
+    J = (-y @ np.log(h) - (1 - y) @ np.log(1 - h)) / m
+    grad = (h - y) @ X / m
 
     # =============================================================
 

@@ -1,14 +1,7 @@
 import numpy as np
-import sys
-sys.path.append('../ex2/')
 
 from Submission import Submission
 from Submission import sprintf
-from lrCostFunction import lrCostFunction
-from oneVsAll import oneVsAll
-from predictOneVsAll import predictOneVsAll
-from predict import predict
-from ex2.gradientFunctionReg import gradientFunctionReg
 
 homework = 'multi-class-classification-and-neural-networks'
 
@@ -28,36 +21,31 @@ srcs = [
 
 
 def output(part_id):
-    # Random Test Cases
-    X = np.c_[np.ones(20),
-              np.exp(1) * np.sin(range(1, 21)),
-              np.exp(0.5) * np.cos(range(1, 21))]
-    y = (np.sin(X[:, 0] + X[:, 1]) > 0).astype(int)
-
-    Xm = np.c_[(-1, -1, -2, -2, 1, 1, 2, 2, -1, -1, -2, -2, 1, 1, -2,
-                -2), (-1, -2, -1, -2, 1, 2, 1, 2, 1, 2, 1, 2, -1, -2, -1, -2)]
-    ym = np.array([1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4])
-
-    theta1 = np.array([0.25, 0.5, -0.5])
-    theta2 = np.sin(range(1, 24, 2)).reshape(4, 3, order='F')
-    theta3 = np.cos(range(1, 40, 2)).reshape(4, 5, order='F')
-
-    lambda_ = 0.1
-    num_labels = 4
-
     fname = srcs[part_id - 1].rsplit('.', 1)[0]
     mod = __import__(fname, fromlist=[fname], level=0)
     func = getattr(mod, fname)
 
+    # Random Test Cases
+    X = np.c_[np.ones(20),
+              np.exp(1) * np.sin(np.arange(1, 21)),
+              np.exp(0.5) * np.cos(np.arange(1, 21))]
+    y = np.sin(X[:, 0] + X[:, 1]) > 0
+    Xm = np.array([[-1, -1], [-1, -2], [-2, -1], [-2, -2], [1, 1], [1, 2],
+                   [2, 1], [2, 2], [-1, 1], [-1, 2], [-2, 1], [-2, 2], [1, -1],
+                   [1, -2], [-2, -1], [-2, -2]])
+    ym = np.array([1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4])
+    t1 = np.sin(np.arange(1, 24, 2).reshape(4, 3, order='F'))
+    t2 = np.cos(np.arange(1, 40, 2).reshape(4, 5, order='F'))
+
     if part_id == 1:
-        J, grad = func(theta1, X, y, lambda_)
+        J, grad = func(np.array([0.25, 0.5, -0.5]), X, y, 0.1)
         return sprintf('%0.5f ', np.r_[J, grad])
     elif part_id == 2:
-        return sprintf('%0.5f ', func(Xm, ym, num_labels, lambda_))
+        return sprintf('%0.5f ', func(Xm, ym, 4, 0.1))
     elif part_id == 3:
-        return sprintf('%0.5f ', func(theta2, Xm))
+        return sprintf('%0.5f ', func(t1, Xm))
     elif part_id == 4:
-        return sprintf('%0.5f ', func(theta2, theta3, Xm))
+        return sprintf('%0.5f ', func(t1, t2, Xm))
 
 
 s = Submission(homework, part_names, srcs, output)

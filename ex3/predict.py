@@ -1,12 +1,14 @@
 import numpy as np
 
-from ex2.sigmoid import sigmoid
+from sigmoid import sigmoid
 
 
 def predict(Theta1, Theta2, X):
     """ outputs the predicted label of X given the
     trained weights of a neural network (Theta1, Theta2)
     """
+    if X.ndim == 1:
+        X = X.reshape(1, -1)
 
     # Useful values
     m = len(X)
@@ -21,16 +23,25 @@ def predict(Theta1, Theta2, X):
     #       information see 'help max'. If your examples are in rows, then, you
     #       can use max(A, [], 2) to obtain the max for each row.
     #
-    z1 = X
-    a1 = np.c_[np.ones(m), z1]
 
-    z2 = np.dot(a1, Theta1.T)
-    a2 = np.c_[np.ones(len(z2)), sigmoid(z2)]
+    # Input Layer
+    z_1 = X
+    a_1 = np.c_[np.ones(m), z_1]
 
-    z3 = np.dot(a2, Theta2.T)
-    a3 = sigmoid(z3)
+    # Hidden Layer
+    z_2 = a_1 @ Theta1.T
+    a_2 = np.c_[np.ones(m), sigmoid(z_2)]
 
-    p = np.argmax(a3, axis=1)
+    # Output Layer
+    z_3 = a_2 @ Theta2.T
+    a_3 = sigmoid(z_3)
+
+    H = a_3
+
+    p = np.argmax(H, axis=1)
+
+    if m == 1:
+        p = p.squeeze()
 
     # =========================================================================
 
